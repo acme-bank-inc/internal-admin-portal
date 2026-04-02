@@ -22,3 +22,7 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/acme-bank-inc/internal-admin-portal:latest,ghcr.io/acme-bank-inc/internal-admin-portal:${{ github.sha }}
+          build-args: |
+            AUTH0_DOMAIN=acme-bank-inc.us.auth0.com
+            AUTH0_CLIENT_ID=PqhcHltyEE8IsW5MW9LeZ4iO2ECORpxl
+            AUTH0_AUDIENCE=https://api.acmebank.com
