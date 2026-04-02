@@ -1,7 +1,9 @@
 <mat-toolbar color="primary">
   <span>Acme Bank Admin</span>
   <span class="spacer"></span>
-  <span class="username">{{ auth.user()?.username }}</span>
+  @if (user$ | async; as user) {
+    <span class="username">{{ user.name || user.email }}</span>
+  }
   <button mat-icon-button (click)="logout()" aria-label="Sign out">
     <mat-icon>logout</mat-icon>
   </button>

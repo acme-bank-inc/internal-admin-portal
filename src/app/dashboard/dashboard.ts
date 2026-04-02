@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +12,7 @@ import { AuthService } from '../services/auth.service';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    AsyncPipe,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -24,7 +26,9 @@ import { AuthService } from '../services/auth.service';
   styleUrl: './dashboard.scss',
 })
 export class DashboardComponent {
-  constructor(public auth: AuthService) {}
+  private auth = inject(AuthService);
+
+  user$ = this.auth.user$;
 
   logout(): void {
     this.auth.logout();

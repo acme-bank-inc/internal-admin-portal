@@ -1,41 +1,39 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnInit } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule,
+    AsyncPipe,
     MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
-export class LoginComponent {
-  username = '';
-  password = '';
-  error = '';
+export class LoginComponent implements OnInit {
+  private auth = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private auth: AuthService, private router: Router) {
-    if (auth.isLoggedIn) {
-      this.router.navigate(['/dashboard/users']);
-    }
+  isAuthenticated$ = this.auth.isAuthenticated$;
+  isLoading$ = this.auth.isLoading$;
+
+  ngOnInit(): void {
+    this.isAuthenticated$.subscribe((authenticated) => {
+      if (authenticated) {
+        this.router.navigate(['/dashboard/users']);
+      }
+    });
   }
 
-  onSubmit(): void {
-    if (this.auth.login(this.username, this.password)) {
-      this.router.navigate(['/dashboard/users']);
-    } else {
-      this.error = 'Invalid credentials. Please provide a username and password.';
-    }
+  login(): void {
+    this.auth.loginWithRedirect();
   }
 }
